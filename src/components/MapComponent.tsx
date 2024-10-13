@@ -175,17 +175,22 @@ const MapComponent: React.FC = () => {
     if (!viewRef.current || !graphicsLayerRef.current || !currentLocation)
       return;
 
-    if (isLineVisible && lineGraphic) {
+     if (isLineVisible && lineGraphic) {
       graphicsLayerRef.current.remove(lineGraphic);
       setLineGraphic(null);
       setIsLineVisible(false);
-    } else {
-      const polyline = new Polyline({
-        paths: [
+    } else if (currentLocation) {
+      const paths: number[][][] = [
+        [
           [currentLocation.longitude, currentLocation.latitude],
           [longitude, latitude],
         ],
+      ];
+
+      const polyline = new Polyline({
+        paths: paths,
       });
+
       const lineGraphic = new Graphic({
         geometry: polyline,
         symbol: new SimpleLineSymbol({
@@ -198,6 +203,7 @@ const MapComponent: React.FC = () => {
         longitude,
         latitude,
       });
+
       const textGraphic = new Graphic({
         geometry: new Point({
           longitude: (currentLocation.longitude + longitude) / 2,
