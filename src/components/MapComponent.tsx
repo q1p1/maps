@@ -19,7 +19,6 @@ interface PointData {
   longitude: number;
   latitude: number;
   color: string;
-  userId: string;
 }
 
 const MapComponent: React.FC = () => {
@@ -36,27 +35,6 @@ const MapComponent: React.FC = () => {
   const [selectedPoint, setSelectedPoint] = useState<PointData | null>(null);
   const [isLineVisible, setIsLineVisible] = useState(false);
   const [lineGraphic, setLineGraphic] = useState<Graphic | null>(null);
-
-  const [userId] = useState<string | null>("1");
-
-  useEffect(() => {
-    if (userId) {
-      fetch(`/api/points/${userId}`)
-        .then((response) => response.json())
-        .then((data) => {
-          setPoints(data);
-          data.forEach((point: PointData) => {
-            updatePointOnMap(
-              point.longitude,
-              point.latitude,
-              point.color,
-              "add"
-            );
-          });
-        })
-        .catch((error) => console.error("Error fetching points:", error));
-    }
-  }, [userId]);
 
   useEffect(() => {
     if (mapDiv.current && !viewRef.current) {
@@ -135,17 +113,10 @@ const MapComponent: React.FC = () => {
         longitude,
         latitude,
         color,
-        userId: userId!,
       };
 
       setPoints((prev) => [...prev, newPoint]);
       updatePointOnMap(longitude, latitude, color, "add");
-
-      fetch("/api/points", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(newPoint),
-      }).catch((error) => console.error("Error adding point:", error));
     } else if (action === "edit") {
       setPoints((prev) =>
         prev.map((point) =>
@@ -153,19 +124,9 @@ const MapComponent: React.FC = () => {
         )
       );
       updatePointOnMap(longitude, latitude, color, "update");
-
-      fetch(`/api/points/${id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, color }),
-      }).catch((error) => console.error("Error editing point:", error));
     } else if (action === "delete") {
       setPoints((prev) => prev.filter((point) => point.id !== id));
       updatePointOnMap(longitude, latitude, color, "remove");
-
-      fetch(`/api/points/${id}`, {
-        method: "DELETE",
-      }).catch((error) => console.error("Error deleting point:", error));
     }
 
     setIsPopupOpen(false);
@@ -182,10 +143,13 @@ const MapComponent: React.FC = () => {
     } else if (currentLocation) {
       const polyline = new Polyline({
         paths: [
-          // [currentLocation.longitude, currentLocation.latitude],
-          // [longitude, latitude],
+          [
+            [currentLocation.longitude, currentLocation.latitude],
+            [longitude, latitude],
+          ],
         ],
       });
+
       const lineGraphic = new Graphic({
         geometry: polyline,
         symbol: new SimpleLineSymbol({
@@ -198,6 +162,7 @@ const MapComponent: React.FC = () => {
         longitude,
         latitude,
       });
+
       const textGraphic = new Graphic({
         geometry: new Point({
           longitude: (currentLocation.longitude + longitude) / 2,
@@ -251,7 +216,6 @@ const MapComponent: React.FC = () => {
             longitude,
             latitude,
             color: "black",
-            userId: userId!,
           })
         }
       />
