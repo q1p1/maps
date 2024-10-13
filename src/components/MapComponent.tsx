@@ -182,8 +182,8 @@ const MapComponent: React.FC = () => {
     } else {
       const polyline = new Polyline({
         paths: [
-          // [currentLocation.longitude, currentLocation.latitude],
-          // [longitude, latitude],
+          [currentLocation.longitude, currentLocation.latitude],
+          [longitude, latitude],
         ],
       });
       const lineGraphic = new Graphic({
