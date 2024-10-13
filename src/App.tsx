@@ -5,8 +5,8 @@ import {
   Routes,
   Navigate,
 } from "react-router-dom";
-import SignIn from "./components/SignIn";
-import Sup from "./components/Sup";
+// import SignIn from "./components/SignIn";
+// import Sup from "./components/Sup";
 import MapComponent from "./components/MapComponent";
 const App: React.FC = () => {
   const isLoggedIn = () => {
@@ -29,7 +29,7 @@ const App: React.FC = () => {
           }
         />
 
-        <Route
+        {/* <Route
           path="/signin"
           element={isLoggedIn() ? <Navigate to="/map" /> : <SignIn />}
         />
@@ -37,7 +37,7 @@ const App: React.FC = () => {
         <Route
           path="/signup"
           element={isLoggedIn() ? <Navigate to="/map" /> : <Sup />}
-        />
+        /> */}
 
         <Route
           path="/map"
