@@ -5,8 +5,8 @@ import {
   Routes,
   Navigate,
 } from "react-router-dom";
-import SignIn from "./components/signFolder/SignIn";
-import Sup from "./components/signFolder/Sup";
+import SignIn from "./components/SignIn";
+import Sup from "./components/Sup";
 import MapComponent from "./components/MapComponent";
 const App: React.FC = () => {
   const isLoggedIn = () => {
